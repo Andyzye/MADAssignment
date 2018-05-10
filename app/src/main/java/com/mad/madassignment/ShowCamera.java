@@ -1,28 +1,58 @@
 package com.mad.madassignment;
 
 import android.content.Context;
-import android.graphics.Camera;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import java.io.IOException;
 
 /**
  * Created by Andy on 7/05/2018.
  */
 
 public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
-    Camera camera;
+    private static final String TAG = "TAG";
+    private SurfaceHolder mHolder;
+    private Camera mCamera;
 
-    public ShowCamera(Context context) {
+    public ShowCamera(Context context, Camera camera) {
         super(context);
+        this.mCamera = camera;
+
+        mHolder = getHolder();
+        mHolder.addCallback(this);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
-    @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        Camera.Parameters params = mCamera.getParameters();
 
+        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            params.set("orientation", "portrait");
+            mCamera.setDisplayOrientation(0);
+            params.setRotation(0);
+        }else {
+            params.set("orientation", "landscape");
+            mCamera.setDisplayOrientation(90);
+            params.setRotation(90   );
+        }
+
+        mCamera.setParameters(params);
+        try{
+            mCamera.setPreviewDisplay(holder);
+            mCamera.startPreview();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
 
     }
 
