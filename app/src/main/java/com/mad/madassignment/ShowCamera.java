@@ -16,6 +16,7 @@ import java.io.IOException;
 
 public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
     private static final String TAG = "TAG";
+
     private SurfaceHolder mHolder;
     private Camera mCamera;
 
@@ -27,27 +28,15 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
-
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Camera.Parameters params = mCamera.getParameters();
-
-        if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            params.set("orientation", "portrait");
-            mCamera.setDisplayOrientation(0);
-            params.setRotation(0);
-        }else {
-            params.set("orientation", "landscape");
-            mCamera.setDisplayOrientation(90);
-            params.setRotation(90   );
-        }
-
-        mCamera.setParameters(params);
         try{
-            mCamera.setPreviewDisplay(holder);
-            mCamera.startPreview();
-        }catch (IOException e){
+            this.mCamera.setPreviewDisplay(holder);
+            this.mCamera.startPreview();
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -58,6 +47,7 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-
+        this.mCamera.stopPreview();
+        this.mCamera.release();
     }
 }
