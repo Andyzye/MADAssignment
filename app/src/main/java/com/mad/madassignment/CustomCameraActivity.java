@@ -47,6 +47,7 @@ import java.util.List;
 public class CustomCameraActivity extends AppCompatActivity {
 
     private static File mImageFile;
+    private File mGalleryFolder;
     private Button mCaptureBtn, mGalleryBtn;
     private String mCameraId;
     private HandlerThread mBackgroundHandlerThread;
@@ -57,7 +58,6 @@ public class CustomCameraActivity extends AppCompatActivity {
     private static final int STATE_PREVIEW = 0;
     private static final int STATE_WAIT_LOCK = 1;
     private int mState;
-    private int mTotalRotation;
     private static SparseIntArray ORIENTATIONS = new SparseIntArray();
 
     static {
@@ -117,6 +117,22 @@ public class CustomCameraActivity extends AppCompatActivity {
     private CaptureRequest.Builder mCaptureRequestBuilder;
     private CameraCaptureSession mCaptureSession;
     private CameraCaptureSession.CaptureCallback mSessionCaptureCallback = new CameraCaptureSession.CaptureCallback() {
+
+        private void process(CaptureResult result) {
+            switch (mState) {
+                case STATE_PREVIEW:
+                    // Do nothing
+                    break;
+                case STATE_WAIT_LOCK:
+                    Integer autoFocusState = result.get(CaptureResult.CONTROL_AF_STATE);
+                    if (autoFocusState == CaptureRequest.CONTROL_AF_STATE_FOCUSED_LOCKED) {
+                        captureImage();
+                    }
+                    break;
+            }
+
+        }
+
         @Override
         public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
             super.onCaptureStarted(session, request, timestamp, frameNumber);
@@ -134,21 +150,6 @@ public class CustomCameraActivity extends AppCompatActivity {
             Toast.makeText(CustomCameraActivity.this, "AutoFocus lock Failed", Toast.LENGTH_SHORT).show();
 
         }
-
-        private void process(CaptureResult result) {
-            switch (mState) {
-                case STATE_PREVIEW:
-                    // Do nothing
-                    break;
-                case STATE_WAIT_LOCK:
-                    Integer autoFocusState = result.get(CaptureResult.CONTROL_AF_STATE);
-                    if (autoFocusState == CaptureRequest.CONTROL_AF_STATE_FOCUSED_LOCKED) {
-                        captureImage();
-                    }
-                    break;
-            }
-
-        }
     };
 
     private ImageReader mImageReader;
@@ -163,14 +164,15 @@ public class CustomCameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_camera);
-        mTextureView = (TextureView) findViewById(R.id.textureView);
+        createImageGallery();
 
+        mTextureView = (TextureView) findViewById(R.id.textureView);
         mCaptureBtn = (Button) findViewById(R.id.capture_btn);
         mGalleryBtn = (Button) findViewById(R.id.gallery_btn);
         mCaptureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lockFocus();
+                captureImage();
 
             }
         });
@@ -189,8 +191,6 @@ public class CustomCameraActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     }
-
-
 
 
     private void setupCamera(int width, int height) {
@@ -215,8 +215,7 @@ public class CustomCameraActivity extends AppCompatActivity {
                 mImageReader = ImageReader.newInstance(largestImageSize.getWidth(), largestImageSize.getHeight(), ImageFormat.JPEG,1);
                 mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mBackgroundHandler);
 
-
-                int deviceOrientation = getWindowManager().getDefaultDisplay().getRotation();
+                /*int deviceOrientation = getWindowManager().getDefaultDisplay().getRotation();
                 mTotalRotation = sensorToDeviceRotation(cameraCharacteristics, deviceOrientation);
                 boolean swapRotation = mTotalRotation == 90 || mTotalRotation == 270;
                 int rotatedWidth = width;
@@ -224,7 +223,8 @@ public class CustomCameraActivity extends AppCompatActivity {
                 if (swapRotation) {
                     rotatedWidth = height;
                     rotatedHeight = width;
-                }
+                }*/
+
                 mPreviewSize = getPreviewSize(map.getOutputSizes(SurfaceTexture.class), width, height);
                 mCameraId = cameraId;
                 return;
@@ -326,14 +326,6 @@ public class CustomCameraActivity extends AppCompatActivity {
         }
     }
 
-    private static class CompareSizeBetweenArea implements Comparator<Size> {
-
-        @Override
-        public int compare(Size left, Size right) {
-            return Long.signum(left.getWidth() * left.getHeight() - right.getWidth() * right.getHeight());
-        }
-    }
-
     private Size getPreviewSize(Size[] mapSizes, int width, int height) {
         List<Size> displaySizes = new ArrayList<>();
         for (Size option : mapSizes) {
@@ -369,13 +361,22 @@ public class CustomCameraActivity extends AppCompatActivity {
         }
         lockFocus();
     }
+    private void createImageGallery() {
+        File storeDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        mGalleryFolder = new File(storeDirectory, "image_gallery");
+        if(!mGalleryFolder.exists()){
+            mGalleryFolder.mkdirs();
+        }
+    }
+
 
     private File createImageFileName() throws IOException {
         String stamp = new SimpleDateFormat("dd-MMy-yyy").format(new Date());
         String imageFileName = "Image_" + stamp;
-        File storeDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File image  = File.createTempFile(imageFileName,"jpg", storeDirectory);
+
+        File image  = File.createTempFile(imageFileName,".jpg", mGalleryFolder);
         mImageLocation = image.getAbsolutePath();
+
         return image;
     }
 
@@ -383,8 +384,8 @@ public class CustomCameraActivity extends AppCompatActivity {
 
         private final Image mImage;
 
-        private SaveImage(Image mImage) {
-            this.mImage = mImage;
+        private SaveImage(Image image) {
+            mImage = image;
         }
 
         @Override
@@ -397,8 +398,6 @@ public class CustomCameraActivity extends AppCompatActivity {
             try {
                 fileOutputStream = new FileOutputStream(mImageFile);
                 fileOutputStream.write(bytes);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
