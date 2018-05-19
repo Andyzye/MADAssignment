@@ -4,4 +4,11 @@
     <string name="start_button">Start!</string>
     <string name="capture_btn">Capture</string>
     <string name="gallery_btn">Gallery</string>
+    <string name="title_activity_confirmation">ConfirmationActivity</string>
+    <string name="title_activity_conformation">ConformationActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="confirm_btn"> Confirm </string>
+    <string name="back_btn"> Back</string>
 </resources>

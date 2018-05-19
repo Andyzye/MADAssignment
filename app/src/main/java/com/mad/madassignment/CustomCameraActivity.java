@@ -2,13 +2,19 @@ package com.mad.madassignment;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.*;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -28,12 +34,15 @@ import android.view.ViewDebug;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.security.spec.EncodedKeySpec;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +52,7 @@ import java.util.Comparator;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class CustomCameraActivity extends AppCompatActivity {
 
@@ -54,12 +64,15 @@ public class CustomCameraActivity extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private Size mPreviewSize;
     private String mImageLocation= "";
+    private String LOCATION_OF_GALLERY = "Image gallery";
+    static final String picLocation = "TEST";
+    private static final int CAMERA_REQUEST_RECEIPT = 0;
     private static final int REQUEST_CAMERA_PERMISSION_CODE = 0;
     private static final int STATE_PREVIEW = 0;
     private static final int STATE_WAIT_LOCK = 1;
+    private static final int STATE_PHOTO_CAPTURED = 2;
     private int mState;
     private static SparseIntArray ORIENTATIONS = new SparseIntArray();
-
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 0);
         ORIENTATIONS.append(Surface.ROTATION_90, 90);
@@ -72,6 +85,7 @@ public class CustomCameraActivity extends AppCompatActivity {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
             setupCamera(width, height);
+           // lockCameraOrientation(width, height);
             connectCamera();
             Toast.makeText(getApplicationContext(), "TextureView is available", Toast.LENGTH_SHORT).show();
         }
@@ -126,6 +140,7 @@ public class CustomCameraActivity extends AppCompatActivity {
                 case STATE_WAIT_LOCK:
                     Integer autoFocusState = result.get(CaptureResult.CONTROL_AF_STATE);
                     if (autoFocusState == CaptureRequest.CONTROL_AF_STATE_FOCUSED_LOCKED) {
+                        mState = STATE_PHOTO_CAPTURED;
                         captureImage();
                     }
                     break;
@@ -169,13 +184,7 @@ public class CustomCameraActivity extends AppCompatActivity {
         mTextureView = (TextureView) findViewById(R.id.textureView);
         mCaptureBtn = (Button) findViewById(R.id.capture_btn);
         mGalleryBtn = (Button) findViewById(R.id.gallery_btn);
-        mCaptureBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                captureImage();
 
-            }
-        });
     }
 
     @Override
@@ -215,17 +224,17 @@ public class CustomCameraActivity extends AppCompatActivity {
                 mImageReader = ImageReader.newInstance(largestImageSize.getWidth(), largestImageSize.getHeight(), ImageFormat.JPEG,1);
                 mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mBackgroundHandler);
 
-                /*int deviceOrientation = getWindowManager().getDefaultDisplay().getRotation();
-                mTotalRotation = sensorToDeviceRotation(cameraCharacteristics, deviceOrientation);
+                int deviceOrientation = getWindowManager().getDefaultDisplay().getRotation();
+                int mTotalRotation = sensorCameraRotation(cameraCharacteristics, deviceOrientation);
                 boolean swapRotation = mTotalRotation == 90 || mTotalRotation == 270;
                 int rotatedWidth = width;
                 int rotatedHeight = height;
                 if (swapRotation) {
                     rotatedWidth = height;
                     rotatedHeight = width;
-                }*/
+                }
 
-                mPreviewSize = getPreviewSize(map.getOutputSizes(SurfaceTexture.class), width, height);
+                mPreviewSize = getPreviewSize(map.getOutputSizes(SurfaceTexture.class), rotatedWidth, rotatedHeight);
                 mCameraId = cameraId;
                 return;
             }
@@ -296,12 +305,23 @@ public class CustomCameraActivity extends AppCompatActivity {
 
             CameraCaptureSession.CaptureCallback captureCallback = new CameraCaptureSession.CaptureCallback() {
                 @Override
+                public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
+                    super.onCaptureStarted(session, request, timestamp, frameNumber);
+                    try {
+                        mImageFile = createImageFileName();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(CustomCameraActivity.this, "Captured", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CustomCameraActivity.this, "Captured" + mImageFile, Toast.LENGTH_SHORT).show();
                     unlockFocus();
                 }
             };
+            mCaptureSession.stopRepeating();
             mCaptureSession.capture(captureBuilder.build(),captureCallback, null);
 
         } catch (CameraAccessException e) {
@@ -354,16 +374,25 @@ public class CustomCameraActivity extends AppCompatActivity {
     }
 
     public void capturePhoto(View view) {
-        try {
-            mImageFile = createImageFileName();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         lockFocus();
+        Intent intent = new Intent(this, ConformationActivity.class);
+        //Uri uri = Uri.fromFile(mImageFile);
+        //uri = Uri.fromFile(new File(mImageFile.toString()));
+
+        //intent.putExtra("TakenPhoto", uri);
+        startActivity(intent);
     }
+
+    public void openGallery(View view) {
+        Intent intent = new Intent(this, GalleryActivity.class);
+        startActivity(intent);
+    }
+
+
     private void createImageGallery() {
+
         File storeDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        mGalleryFolder = new File(storeDirectory, "image_gallery");
+        mGalleryFolder = new File(storeDirectory, LOCATION_OF_GALLERY );
         if(!mGalleryFolder.exists()){
             mGalleryFolder.mkdirs();
         }
@@ -373,10 +402,8 @@ public class CustomCameraActivity extends AppCompatActivity {
     private File createImageFileName() throws IOException {
         String stamp = new SimpleDateFormat("dd-MMy-yyy").format(new Date());
         String imageFileName = "Image_" + stamp;
-
-        File image  = File.createTempFile(imageFileName,".jpg", mGalleryFolder);
+        File image  = File.createTempFile(imageFileName, ".jpg",  mGalleryFolder);
         mImageLocation = image.getAbsolutePath();
-
         return image;
     }
 
@@ -427,7 +454,7 @@ public class CustomCameraActivity extends AppCompatActivity {
         mState = STATE_PREVIEW;
         mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_CANCEL);
         try {
-            mCaptureSession.capture(mCaptureRequestBuilder.build(), mSessionCaptureCallback, mBackgroundHandler);
+            mCaptureSession.setRepeatingRequest(mCaptureRequestBuilder.build(), mSessionCaptureCallback, mBackgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -439,6 +466,7 @@ public class CustomCameraActivity extends AppCompatActivity {
         startBackgroundThread();
         if (mTextureView.isAvailable()) {
             setupCamera(mTextureView.getWidth(), mTextureView.getHeight());
+            //lockCameraOrientation(mTextureView.getWidth(), mTextureView.getHeight());
             connectCamera();
         } else {
             mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
@@ -463,11 +491,33 @@ public class CustomCameraActivity extends AppCompatActivity {
 
     }
 
-    private static int sensorToDeviceRotation(CameraCharacteristics cameraCharacteristics, int deviceOrientation) {
+    private static int sensorCameraRotation(CameraCharacteristics cameraCharacteristics, int deviceOrientation) {
         int sensorOrientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
         deviceOrientation = ORIENTATIONS.get(deviceOrientation);
         return (sensorOrientation + deviceOrientation + 360) % 360;
     }
+
+    private void lockCameraOrientation( int width, int height){
+        if(mPreviewSize == null || mTextureView == null){
+            return;
+        }
+        Matrix matrix = new Matrix();
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
+        RectF textureViewRectF = new RectF(0,0, width, height);
+        RectF previewSizeRectF = new RectF(0,0, mPreviewSize.getHeight(), mPreviewSize.getWidth());
+        float middleX = textureViewRectF.centerX();
+        float middleY = previewSizeRectF.centerY();
+        if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270){
+            previewSizeRectF.offset(middleX - previewSizeRectF.centerX(), middleY - previewSizeRectF.centerY());
+            matrix.setRectToRect(textureViewRectF, previewSizeRectF, Matrix.ScaleToFit.FILL);
+            float scale = Math.max((float) width / mPreviewSize.getWidth(), (float) height / mPreviewSize.getHeight());
+            matrix.postScale(scale, scale, middleX, middleY);
+            // allows it to workout if the roation is 90 or 270
+            matrix.postRotate(90 + (rotation - 2), middleX, middleY);
+        }
+        mTextureView.setTransform(matrix);
+    }
+
     private void closeCamera() {
         if (mCaptureSession != null) {
             mCaptureSession.close();
@@ -482,6 +532,7 @@ public class CustomCameraActivity extends AppCompatActivity {
             mImageReader = null;
         }
     }
+
 
 }
 
