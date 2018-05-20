@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.mad.madassignment.CustomCameraActivity">
+    tools:context="com.mad.madassignment.custom_camera.CustomCameraActivity">
 
 
     <TextureView
-        android:id="@+id/textureView"
+        android:id="@+id/camrea_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -33,15 +33,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/capture_btn"
-            android:onClick="capturePhoto"/>
+            android:text="@string/capture_btn" />
 
         <Button
             android:id="@+id/gallery_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/gallery_btn"
-            android:onClick="openGallery"/>
+            android:text="@string/gallery_btn" />
     </LinearLayout>
 </android.widget.RelativeLayout>

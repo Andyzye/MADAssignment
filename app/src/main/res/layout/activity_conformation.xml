@@ -5,10 +5,10 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ConformationActivity">
+    tools:context=".conformation.ConformationActivity">
 
     <ImageView
-        android:id="@+id/CapturedImage"
+        android:id="@+id/conformationImage_Iv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"/>
@@ -26,13 +26,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/confirm_btn"
-            />
+            android:text="@string/confirm_btn"/>
+            <!--android:onClick="processImage"-->
         <Button
+            android:id="@+id/retake_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/back_btn" />
+            android:text="@string/retake_btn"/>
+            <!--android:onClick="takePhoto"-->
+
     </LinearLayout>
 
 </android.widget.RelativeLayout>

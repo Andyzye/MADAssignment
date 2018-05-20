@@ -1,11 +1,9 @@
-package com.mad.madassignment;
+package com.mad.madassignment.custom_camera;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.RectF;
@@ -19,30 +17,28 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.provider.ContactsContract;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewDebug;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
+import com.mad.madassignment.gallery.GalleryActivity;
+import com.mad.madassignment.R;
+import com.mad.madassignment.conformation.ConformationActivity;
+
 import java.io.File;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.security.spec.EncodedKeySpec;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,21 +48,23 @@ import java.util.Comparator;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
-public class CustomCameraActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class CustomCameraActivity extends AppCompatActivity implements CustomCameraInterface.view{
 
     private static File mImageFile;
     private File mGalleryFolder;
-    private Button mCaptureBtn, mGalleryBtn;
+
+    @BindView(R.id.camrea_tv) TextureView mTextureView;
     private String mCameraId;
     private HandlerThread mBackgroundHandlerThread;
     private Handler mBackgroundHandler;
     private Size mPreviewSize;
     private String mImageLocation= "";
     private String LOCATION_OF_GALLERY = "Image gallery";
-    static final String picLocation = "TEST";
-    private static final int CAMERA_REQUEST_RECEIPT = 0;
     private static final int REQUEST_CAMERA_PERMISSION_CODE = 0;
     private static final int STATE_PREVIEW = 0;
     private static final int STATE_WAIT_LOCK = 1;
@@ -80,7 +78,8 @@ public class CustomCameraActivity extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_270, 270);
     }
 
-    private TextureView mTextureView;
+    private CustomCameraPresenter mPresenter;
+
     private TextureView.SurfaceTextureListener mSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -127,6 +126,7 @@ public class CustomCameraActivity extends AppCompatActivity {
             mCameraDevice = null;
         }
     };
+
     private CaptureRequest mCaptureRequest;
     private CaptureRequest.Builder mCaptureRequestBuilder;
     private CameraCaptureSession mCaptureSession;
@@ -179,12 +179,9 @@ public class CustomCameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_camera);
-        createImageGallery();
-
-        mTextureView = (TextureView) findViewById(R.id.textureView);
-        mCaptureBtn = (Button) findViewById(R.id.capture_btn);
-        mGalleryBtn = (Button) findViewById(R.id.gallery_btn);
-
+        ButterKnife.bind(this);
+        mPresenter = new CustomCameraPresenter(this);
+        mPresenter.createImageGalleryCalled();
     }
 
     @Override
@@ -307,18 +304,14 @@ public class CustomCameraActivity extends AppCompatActivity {
                 @Override
                 public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
                     super.onCaptureStarted(session, request, timestamp, frameNumber);
-                    try {
-                        mImageFile = createImageFileName();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    mImageFile = mPresenter.createImageFileNameCalled();
                 }
 
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
                     Toast.makeText(CustomCameraActivity.this, "Captured" + mImageFile, Toast.LENGTH_SHORT).show();
-                    unlockFocus();
+                    mPresenter.unLockFocus();
                 }
             };
             mCaptureSession.stopRepeating();
@@ -373,23 +366,34 @@ public class CustomCameraActivity extends AppCompatActivity {
 
     }
 
-    public void capturePhoto(View view) {
-        lockFocus();
+    public void captureImageBackground() {
+        mPresenter.lockFocus();
+        Uri uri = null;
         Intent intent = new Intent(this, ConformationActivity.class);
-        //Uri uri = Uri.fromFile(mImageFile);
-        //uri = Uri.fromFile(new File(mImageFile.toString()));
-
+            uri = Uri.fromFile(new File(mImageLocation));
         //intent.putExtra("TakenPhoto", uri);
+        intent.setData(uri);
         startActivity(intent);
     }
 
-    public void openGallery(View view) {
+
+    public void openGalleryActivity() {
         Intent intent = new Intent(this, GalleryActivity.class);
         startActivity(intent);
     }
 
+    @OnClick(R.id.gallery_btn)
+    public void openGallery(View view){
+        mPresenter.openGalleryActivityCalled();
+    }
 
-    private void createImageGallery() {
+    @OnClick(R.id.capture_btn)
+    public void CapturePhoto(View view){
+        mPresenter.captureImageBackgroundCalled();
+    }
+
+    @Override
+    public void createImageGallery() {
 
         File storeDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         mGalleryFolder = new File(storeDirectory, LOCATION_OF_GALLERY );
@@ -398,8 +402,8 @@ public class CustomCameraActivity extends AppCompatActivity {
         }
     }
 
-
-    private File createImageFileName() throws IOException {
+    @Override
+    public File createImageFileName() throws IOException {
         String stamp = new SimpleDateFormat("dd-MMy-yyy").format(new Date());
         String imageFileName = "Image_" + stamp;
         File image  = File.createTempFile(imageFileName, ".jpg",  mGalleryFolder);
@@ -440,7 +444,8 @@ public class CustomCameraActivity extends AppCompatActivity {
         }
     }
 
-    private void lockFocus() {
+    @Override
+    public void lockFocus() {
         mState = STATE_WAIT_LOCK;
         mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_START);
         try {
@@ -450,7 +455,8 @@ public class CustomCameraActivity extends AppCompatActivity {
         }
     }
 
-    private void unlockFocus() {
+    @Override
+    public void unlockFocus() {
         mState = STATE_PREVIEW;
         mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_CANCEL);
         try {

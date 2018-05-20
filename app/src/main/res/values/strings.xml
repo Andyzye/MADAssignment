@@ -10,5 +10,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="confirm_btn"> Confirm </string>
-    <string name="back_btn"> Back</string>
+    <string name="retake_btn"> Take Another</string>
+    <string name="choose_btn"> Choose Another</string>
 </resources>

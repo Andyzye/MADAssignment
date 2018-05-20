@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/startBackground"
-    tools:context="com.mad.madassignment.StartActivity">
+    tools:context="com.mad.madassignment.start.StartActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/title_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -43,7 +43,7 @@
         >
 
         <Button
-            android:id="@+id/start_button"
+            android:id="@+id/start_btn"
             style="?metaButtonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

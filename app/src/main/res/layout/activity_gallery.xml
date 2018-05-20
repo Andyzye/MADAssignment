@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GalleryActivity">
+    tools:context=".gallery.GalleryActivity">
 
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/capture_image_iv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
@@ -22,17 +22,18 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/confirm_btn"
+            android:id="@+id/confirm_captured_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/confirm_btn"
             />
         <Button
+            android:id="@+id/choose_another_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/back_btn"
-            android:onClick="openGallery"/>
+            android:text="@string/choose_btn"
+            />
     </LinearLayout>
 </android.widget.RelativeLayout>
