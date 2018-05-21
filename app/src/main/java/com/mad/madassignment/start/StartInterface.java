@@ -1,6 +1,6 @@
 package com.mad.madassignment.start;
 
-public class StartInterface {
+public interface StartInterface {
     interface view{
         void openCameraActivity();
 
