@@ -41,5 +41,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/gallery_btn" />
+
     </LinearLayout>
 </android.widget.RelativeLayout>

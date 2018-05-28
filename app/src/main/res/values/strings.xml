@@ -12,4 +12,5 @@
     <string name="confirm_btn"> Confirm </string>
     <string name="retake_btn"> Take Another</string>
     <string name="choose_btn"> Choose Another</string>
+    <string name="nothing_test"> Nothing was found!</string>
 </resources>

@@ -14,7 +14,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.mad.madassignment.ProcessImageActivity;
 import com.mad.madassignment.R;
+import com.mad.madassignment.conformation.ConformationActivity;
 
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
@@ -27,6 +29,7 @@ import butterknife.OnClick;
 public class GalleryActivity extends AppCompatActivity implements GalleryInterface.view {
     private ImageView mImageView;
     private Uri mImageUri;
+    private Bitmap bitmap;
     private static final int REQUEST_CODE = 0;
 
     private GalleryPresenter mPresenter;
@@ -46,12 +49,12 @@ public class GalleryActivity extends AppCompatActivity implements GalleryInterfa
     protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             if (resultData != null) {
+
                 mImageUri = resultData.getData();
                 Glide.with(this).load(mImageUri).into(imageView);
             }
         }
     }
-
 
     @OnClick(R.id.choose_another_btn)
     public void ChooseAnotherPicture(View view) {
@@ -61,7 +64,9 @@ public class GalleryActivity extends AppCompatActivity implements GalleryInterfa
 
     @OnClick(R.id.confirm_captured_btn)
     public void CapturedProcessImage(View view){
-
+        Intent intent = new Intent(GalleryActivity.this, ProcessImageActivity.class);
+        intent.putExtra("intentedData2", mImageUri.toString());
+        startActivity(intent);
     }
 
     @Override

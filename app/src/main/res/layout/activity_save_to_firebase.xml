@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    tools:context=".SaveToFirebase">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/flower_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:hint="Name"/>
+
+            <TextView
+                android:id="@+id/flower_family"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_name"
+                android:layout_marginTop="20sp"
+                android:text="Family:"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/flower_family_Et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_name"
+                android:layout_toEndOf="@+id/flower_family"
+                android:layout_marginTop="10sp"
+                android:textSize="15sp"
+                android:hint="family"/>
+
+            <TextView
+                android:id="@+id/flower_lifecycle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_family"
+                android:layout_marginTop="10sp"
+                android:text="Life cycle:"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/flower_lifecycle_Et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_family"
+                android:layout_toEndOf="@+id/flower_lifecycle"
+                android:textSize="15sp"
+                android:hint="lifecycle"/>
+
+            <TextView
+                android:id="@+id/flower_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_lifecycle"
+                android:layout_marginTop="10sp"
+                android:text="Flower Time:"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/flower_time_Et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_lifecycle"
+                android:layout_toEndOf="@+id/flower_time"
+                android:textSize="15sp"
+                android:hint="flower time"/>
+
+            <TextView
+                android:id="@+id/flower_country_of_origin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_time"
+                android:layout_marginTop="10sp"
+                android:text="Country of Origin:"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/flower_country_of_origin_Tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_time"
+                android:layout_toEndOf="@+id/flower_country_of_origin"
+                android:textSize="15sp"
+                android:hint="country of origin"/>
+
+            <TextView
+                android:id="@+id/flower_sun_requirements"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_country_of_origin"
+                android:layout_marginTop="10sp"
+                android:text="Sun Requirements:"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/flower_sun_requirements_Tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_country_of_origin"
+                android:layout_toEndOf="@+id/flower_sun_requirements"
+                android:textSize="15sp"
+                android:hint="sun requirements"/>
+
+            <TextView
+                android:id="@+id/flower_propagation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_sun_requirements"
+                android:layout_marginTop="10sp"
+                android:text="Propagation:"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/flower_propagation_Tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_sun_requirements"
+                android:layout_toEndOf="@+id/flower_propagation"
+                android:textSize="15sp"
+                android:hint="propagation"/>
+
+            <TextView
+                android:id="@+id/flower_attractants"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_propagation"
+                android:layout_marginTop="10sp"
+                android:text="Wildlife Attractants:"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/flower_attractants_Tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_propagation"
+                android:layout_toEndOf="@+id/flower_attractants"
+                android:layout_marginTop="10sp"
+                android:textSize="15sp"
+                android:hint="flower arractant"/>
+
+            <TextView
+                android:id="@+id/flower_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_attractants"
+                android:layout_marginTop="10sp"
+                android:text="Description"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+
+            <EditText
+                android:id="@+id/flower_description_Tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_description"
+                android:layout_marginTop="10sp"
+                android:textSize="15sp"
+                android:hint="write description "/>
+
+            <TextView
+                android:id="@+id/flower_growing_condi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_description_Tv"
+                android:layout_marginTop="10sp"
+                android:text="Growing Conditions"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+            <EditText
+                android:id="@+id/flower_growing_condi_Tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_growing_condi"
+                android:layout_marginTop="10sp"
+                android:textSize="15sp"
+                android:hint="write growing condition"
+                />
+
+            <TextView
+                android:id="@+id/flower_planting_instructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_growing_condi_Tv"
+                android:layout_marginTop="10sp"
+                android:text="Planting Instructions"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/flower_planting_instructions_Et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/flower_planting_instructions"
+                android:layout_marginTop="10sp"
+                android:textSize="15sp"
+                android:hint="write planting instructions"/>
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+</android.widget.RelativeLayout>

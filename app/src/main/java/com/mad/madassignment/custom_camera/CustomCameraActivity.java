@@ -63,7 +63,8 @@ public class CustomCameraActivity extends AppCompatActivity implements CustomCam
     private HandlerThread mBackgroundHandlerThread;
     private Handler mBackgroundHandler;
     private Size mPreviewSize;
-    private String mImageLocation= "";
+    private String mImageLocation ;
+
     private String LOCATION_OF_GALLERY = "Image gallery";
     private static final int REQUEST_CAMERA_PERMISSION_CODE = 0;
     private static final int STATE_PREVIEW = 0;
@@ -130,8 +131,8 @@ public class CustomCameraActivity extends AppCompatActivity implements CustomCam
     private CaptureRequest mCaptureRequest;
     private CaptureRequest.Builder mCaptureRequestBuilder;
     private CameraCaptureSession mCaptureSession;
-    private CameraCaptureSession.CaptureCallback mSessionCaptureCallback = new CameraCaptureSession.CaptureCallback() {
 
+    private CameraCaptureSession.CaptureCallback mSessionCaptureCallback = new CameraCaptureSession.CaptureCallback() {
         private void process(CaptureResult result) {
             switch (mState) {
                 case STATE_PREVIEW:
@@ -310,13 +311,13 @@ public class CustomCameraActivity extends AppCompatActivity implements CustomCam
                 @Override
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(CustomCameraActivity.this, "Captured" + mImageFile, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(CustomCameraActivity.this, "Captured" + mImageFile, Toast.LENGTH_SHORT).show();
                     mPresenter.unLockFocus();
+
                 }
             };
             mCaptureSession.stopRepeating();
             mCaptureSession.capture(captureBuilder.build(),captureCallback, null);
-
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -368,12 +369,7 @@ public class CustomCameraActivity extends AppCompatActivity implements CustomCam
 
     public void captureImageBackground() {
         mPresenter.lockFocus();
-        Uri uri = null;
-        Intent intent = new Intent(this, ConformationActivity.class);
-            uri = Uri.fromFile(new File(mImageLocation));
-        //intent.putExtra("TakenPhoto", uri);
-        intent.setData(uri);
-        startActivity(intent);
+        runInDelay();
     }
 
 
@@ -385,16 +381,30 @@ public class CustomCameraActivity extends AppCompatActivity implements CustomCam
     @OnClick(R.id.gallery_btn)
     public void openGallery(View view){
         mPresenter.openGalleryActivityCalled();
+
     }
 
     @OnClick(R.id.capture_btn)
     public void CapturePhoto(View view){
         mPresenter.captureImageBackgroundCalled();
+
+    }
+
+    private void runInDelay(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String locationTest = mImageFile.getPath();
+                Intent intent = new Intent(CustomCameraActivity.this, ConformationActivity.class);
+                intent.putExtra("location", locationTest);
+                startActivity(intent);
+            }
+        }, 2000);
     }
 
     @Override
     public void createImageGallery() {
-
         File storeDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         mGalleryFolder = new File(storeDirectory, LOCATION_OF_GALLERY );
         if(!mGalleryFolder.exists()){

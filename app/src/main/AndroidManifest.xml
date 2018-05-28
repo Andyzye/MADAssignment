@@ -5,10 +5,12 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:name="android.hardware.camera2.full" />
 
     <application
+        android:name=".MadApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -29,7 +31,10 @@
         <activity
             android:name=".conformation.ConformationActivity"
             android:label="@string/title_activity_conformation" />
-        <activity android:name=".gallery.GalleryActivity"></activity>
+        <activity android:name=".gallery.GalleryActivity" />
+        <activity android:name=".ProcessImageActivity" />
+        <activity android:name=".DisplayInformation" />
+        <activity android:name=".SaveToFirebase"></activity>
     </application>
 
 </manifest>
