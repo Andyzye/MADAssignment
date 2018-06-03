@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="20dp"
-    tools:context=".SaveToFirebase">
+    tools:context=".SavetoFireBase.SaveToFirebase">
 
 
     <ScrollView
@@ -14,7 +14,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/flower_name"
@@ -93,7 +93,7 @@
                 android:textStyle="bold"/>
 
             <EditText
-                android:id="@+id/flower_country_of_origin_Tv"
+                android:id="@+id/flower_country_of_origin_Et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_time"
@@ -112,7 +112,7 @@
                 android:textStyle="bold"/>
 
             <EditText
-                android:id="@+id/flower_sun_requirements_Tv"
+                android:id="@+id/flower_sun_requirements_Et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_country_of_origin"
@@ -131,7 +131,7 @@
                 android:textStyle="bold"/>
 
             <EditText
-                android:id="@+id/flower_propagation_Tv"
+                android:id="@+id/flower_propagation_Et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_sun_requirements"
@@ -150,7 +150,7 @@
                 android:textStyle="bold"/>
 
             <EditText
-                android:id="@+id/flower_attractants_Tv"
+                android:id="@+id/flower_attractants_Et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_propagation"
@@ -171,7 +171,7 @@
 
 
             <EditText
-                android:id="@+id/flower_description_Tv"
+                android:id="@+id/flower_description_Et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_description"
@@ -183,13 +183,13 @@
                 android:id="@+id/flower_growing_condi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/flower_description_Tv"
+                android:layout_below="@+id/flower_description_Et"
                 android:layout_marginTop="10sp"
                 android:text="Growing Conditions"
                 android:textSize="18sp"
                 android:textStyle="bold"/>
             <EditText
-                android:id="@+id/flower_growing_condi_Tv"
+                android:id="@+id/flower_growing_condi_Et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_growing_condi"
@@ -202,7 +202,7 @@
                 android:id="@+id/flower_planting_instructions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/flower_growing_condi_Tv"
+                android:layout_below="@+id/flower_growing_condi_Et"
                 android:layout_marginTop="10sp"
                 android:text="Planting Instructions"
                 android:textStyle="bold"
@@ -216,6 +216,13 @@
                 android:layout_marginTop="10sp"
                 android:textSize="15sp"
                 android:hint="write planting instructions"/>
+
+            <Button
+                android:id="@+id/submit_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/flower_planting_instructions_Et"
+                android:text="Submit"/>
 
         </RelativeLayout>
 

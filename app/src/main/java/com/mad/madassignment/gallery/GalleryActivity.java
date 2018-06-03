@@ -2,25 +2,15 @@ package com.mad.madassignment.gallery;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.mad.madassignment.ProcessImageActivity;
+import com.mad.madassignment.ProcessImage.ProcessImageActivity;
 import com.mad.madassignment.R;
-import com.mad.madassignment.conformation.ConformationActivity;
-
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

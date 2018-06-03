@@ -4,11 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mad.madassignment.R;
+import com.mad.madassignment.SavetoFireBase.SaveToFirebase;
 import com.mad.madassignment.custom_camera.CustomCameraActivity;
 
 import butterknife.BindView;
@@ -34,6 +33,12 @@ public class StartActivity extends AppCompatActivity implements StartInterface.v
     @OnClick(R.id.start_btn)
     public void startCamera(View view){
         mPresenter.openCamera();
+    }
+
+    @OnClick(R.id.save_btn)
+    public void save(View view){
+        Intent intent = new Intent(StartActivity.this, SaveToFirebase.class);
+        startActivity(intent);
     }
 
     @Override

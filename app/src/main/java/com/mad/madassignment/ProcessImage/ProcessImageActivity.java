@@ -1,11 +1,8 @@
-package com.mad.madassignment;
+package com.mad.madassignment.ProcessImage;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -34,16 +31,9 @@ import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
-import com.mad.madassignment.conformation.ConformationActivity;
-import com.mad.madassignment.gallery.GalleryActivity;
-
-import org.w3c.dom.Text;
+import com.mad.madassignment.R;
+import com.mad.madassignment.SavetoFireBase.SaveToFirebase;
+import com.mad.madassignment.displayInformation.DisplayInformation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,8 +57,6 @@ public class ProcessImageActivity extends AppCompatActivity {
     TextView textViewResults;
     @BindView(R.id.progressBarUpdate)
     ProgressBar imageUploadProgress;
-    @BindView(R.id.filteredResult)
-    TextView filtedTv;
 
 
     @Override
@@ -172,11 +160,20 @@ public class ProcessImageActivity extends AppCompatActivity {
             }
 
             protected void onPostExecute(String result) {
-                textViewResults.setText(result);
-                imageUploadProgress.setVisibility(View.INVISIBLE);
-                Intent intent = new Intent(ProcessImageActivity.this, DisplayInformation.class);
-                intent.putExtra("VisionResult", result);
-                startActivity(intent);
+                if(result == null || result.isEmpty()){
+                    textViewResults.setText(R.string.no_flower);
+                    imageUploadProgress.setVisibility(View.INVISIBLE);
+                    Intent intent = new Intent(ProcessImageActivity.this,SaveToFirebase.class);
+                    Toast.makeText(ProcessImageActivity.this, "Could not Find any Flowers", Toast.LENGTH_SHORT).show();
+                    startActivity(intent);
+                } else {
+                    textViewResults.setText(result);
+                    imageUploadProgress.setVisibility(View.INVISIBLE);
+                    Intent intent = new Intent(ProcessImageActivity.this, DisplayInformation.class);
+                    intent.putExtra("VisionResult", result);
+                    startActivity(intent);
+                }
+
             }
         }.execute();
     }
@@ -208,7 +205,7 @@ public class ProcessImageActivity extends AppCompatActivity {
             for (EntityAnnotation entity : entityAnnotations) {
                 if(entity.getDescription().contains("family")) {
                     message = entity.getDescription();
-                    mFlowerDetected = entity.getDescription();
+                    //mFlowerDetected = entity.getDescription();
                 }
             }
         } else {

@@ -10,7 +10,6 @@
     <uses-feature android:name="android.hardware.camera2.full" />
 
     <application
-        android:name=".MadApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,14 +26,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".custom_camera.CustomCameraActivity" />
+        <activity android:name=".custom_camera.CustomCameraActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".conformation.ConformationActivity"
-            android:label="@string/title_activity_conformation" />
-        <activity android:name=".gallery.GalleryActivity" />
-        <activity android:name=".ProcessImageActivity" />
-        <activity android:name=".DisplayInformation" />
-        <activity android:name=".SaveToFirebase"></activity>
+            android:label="@string/title_activity_conformation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".gallery.GalleryActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ProcessImage.ProcessImageActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".displayInformation.DisplayInformation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SavetoFireBase.SaveToFirebase"
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

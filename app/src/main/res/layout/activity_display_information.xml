@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/activity_horizontal_margin"
-    tools:context=".DisplayInformation">
-
+    tools:context=".displayInformation.DisplayInformation">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -28,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_name"
                 android:layout_marginTop="20sp"
-                android:text="Family:"
+                android:text="Family: "
                 android:textSize="15sp"
                 android:textStyle="bold"/>
 
@@ -47,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_family"
                 android:layout_marginTop="10sp"
-                android:text="Life cycle:"
+                android:text="Life cycle: "
                 android:textSize="15sp"
                 android:textStyle="bold"/>
 
@@ -66,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_lifecycle"
                 android:layout_marginTop="10sp"
-                android:text="Flower Time:"
+                android:text="Flower Time: "
                 android:textSize="15sp"
                 android:textStyle="bold"/>
 
@@ -85,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_time"
                 android:layout_marginTop="10sp"
-                android:text="Country of Origin:"
+                android:text="Country of Origin: "
                 android:textSize="15sp"
                 android:textStyle="bold"/>
 
@@ -104,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_country_of_origin"
                 android:layout_marginTop="10sp"
-                android:text="Sun Requirements:"
+                android:text="Sun Requirements: "
                 android:textSize="15sp"
                 android:textStyle="bold"/>
 
@@ -123,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_sun_requirements"
                 android:layout_marginTop="10sp"
-                android:text="Propagation:"
+                android:text="Propagation: "
                 android:textSize="15sp"
                 android:textStyle="bold"/>
 
@@ -142,7 +141,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/flower_propagation"
                 android:layout_marginTop="10sp"
-                android:text="Wildlife Attractants:"
+                android:text="Wildlife Attractants: "
                 android:textSize="15sp"
                 android:textStyle="bold"/>
 

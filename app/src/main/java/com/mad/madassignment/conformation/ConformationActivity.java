@@ -3,6 +3,7 @@ package com.mad.madassignment.conformation;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -19,7 +20,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-import com.mad.madassignment.ProcessImageActivity;
+import com.mad.madassignment.ProcessImage.ProcessImageActivity;
 import com.mad.madassignment.R;
 
 import java.io.File;
@@ -46,10 +47,10 @@ public class ConformationActivity extends AppCompatActivity implements Conformat
 
         mIntentedData = getIntent().getStringExtra("location");
         mImageUri = Uri.fromFile(new File(mIntentedData));
-
         //Glide.with(this).load(mImageUri).transform(new RotateTransformation(this, 90f)).into(imageView);
         Glide.with(this).load(mImageUri).into(imageView);
     }
+
 
     private void requestStoragePermission() {
         Dexter.withActivity(this)
